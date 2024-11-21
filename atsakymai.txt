@@ -68,7 +68,7 @@ VIDUTINIS LYGIS
 
 ***************************************
 
-SUDETINGAS LYGIS
+SUDĖTINGAS LYGIS
 25 + 12 * 3 - 8 / 2 = 53
 30 - 15 / 3 + 4 * 2 = 37
 18 * 2 / 6 + 7 - 3 = 10
