@@ -38,18 +38,20 @@ char **uzkrautiKlausimus(const char *failoVardas, int *skaiciuotiKlausimus)
 }
 
 // Funkcija atsitiktinai pasirinkti klausimą ir jį atspausdinti
-void spausdintiAtsitiktiniKlausima(char **klausimai, int skaiciuotiKlausimus)
+char *spausdintiAtsitiktiniKlausima(char **klausimai, int skaiciuotiKlausimus)
 {
     if (skaiciuotiKlausimus == 0)
     {
         printf("Failas neturi jokių klausimų.\n");
-        return;
+        return NULL;
     }
     
     srand(time(NULL));
 
     int atsitiktinis = rand() % skaiciuotiKlausimus;
     printf("Klausimas: %s\n", klausimai[atsitiktinis]);
+
+     return klausimai[atsitiktinis]; 
 }
 
 // Funkcija atlaisvinti atminčiai
@@ -60,4 +62,65 @@ void atlaisvintiAtminti(char **klausimai, int skaiciuotiKlausimus)
         free(klausimai[i]);
     }
     free(klausimai);
+}
+
+// Funkcija pakeisti "?" į įvestą žaidėjo operaciją
+void pakeistiZenkla(char *klausimas)
+{
+    int klausimoIlgis = strlen(klausimas);
+    int zenkluSkaicius = 0;
+
+    for(int i = 0; i < klausimoIlgis; i++)
+    {
+        if(klausimas[i] == '?')
+        {
+            zenkluSkaicius++;
+        }
+    }
+
+    printf("Įveskite %d ženklus (+, -, /, *): \n", zenkluSkaicius);
+    char *zenklai = (char *)malloc(sizeof(char) * zenkluSkaicius);
+
+    for(int i = 0; i < zenkluSkaicius; i++)
+    {
+        char ivestasZenklas;
+        int tinkamas = 0;
+
+        do
+        {
+            printf("Pasirinkite %d ženklą: ", i + 1);
+            scanf(" %c", &ivestasZenklas);
+
+            if(ivestasZenklas == '+' || ivestasZenklas == '-' || ivestasZenklas == '*' || ivestasZenklas == '/')
+            {
+                zenklai[i] = ivestasZenklas;
+                tinkamas = 1;
+            }
+            else
+            {
+                printf("\nKlaida: Įvestas ženklas neegzistuoja. Pasirinkite ženklą. (+, -, *, /)\n");
+            }
+
+            while (getchar() != '\n')
+            {
+                ; // praleidžia visus įvestus simbolius iki naujos eilutės, jei jų yra
+            }
+                
+        } while(!tinkamas);
+    }
+
+    // Pakeičiame `?` įvestais ženklais
+    int zenkloKeitimas = 0;
+    for(int i = 0; i < klausimoIlgis; i++)
+    {
+        if(klausimas[i] == '?')
+        {
+            klausimas[i] = zenklai[zenkloKeitimas];
+            zenkloKeitimas++;
+        }
+    }
+
+    printf("Jūsų įvesti ženklai: %s\n", klausimas);
+    
+    free(zenklai);
 }
