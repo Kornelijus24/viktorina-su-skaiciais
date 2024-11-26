@@ -6,14 +6,15 @@
 #include <ctype.h>
 #include "klausimai.h"
 
+
 int main() {
     
     system("chcp 65001 > nul");
     setlocale(LC_ALL, ".UTF-8");
 
-
     const char *failoVardas = "lengvas_lygis.txt";
     int skaiciuotiKlausimus;
+    int zaidejoTaskai = 0;
 
     printf("|***************************************************************|\n");
     printf("                   Sveiki atvykę į žaidimą.\n");
@@ -23,7 +24,7 @@ int main() {
     { 
     }
 
-    char **klausimai = uzkrautiKlausimus(failoVardas, &skaiciuotiKlausimus);
+    Klausimas *klausimai = uzkrautiKlausimusIrAtsakymus(failoVardas, &skaiciuotiKlausimus);
 
     int zaidimasVyksta = 1;
 
@@ -31,10 +32,11 @@ int main() {
     {
 
         // Atspausdina atsitiktinį klausimą
-        char *klausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
+        Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
 
-        // Pakeičia '?' į įvestus ženklus
-        pakeistiZenkla(klausimas);
+        // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
+        pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai);
+        strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
 
         char atsakymas[10];
         int tinkamasAtsakymas = 0;
@@ -60,7 +62,7 @@ int main() {
                 tinkamasAtsakymas = 1; // Tinkama įvestis, uždarome žaidimą
                 zaidimasVyksta = 0;
                 printf("|***************************************************************|\n");
-                printf("            Žaidimas baigtas. Ačiū, kad žaidėte!\n");
+                printf("            Žaidimas baigtas! Iš viso surinkote: %d taškų\n", zaidejoTaskai);
                 printf("|***************************************************************|\n");
             }
             else
@@ -75,7 +77,7 @@ int main() {
     }
 
     // Atlaisvina atmintį
-    atlaisvintiAtminti(klausimai, skaiciuotiKlausimus);
+    atlaisvintiAtminti(klausimai);
 
     printf("            Paspauskite Enter, kad uždarytumėte žaidimą...\n");
     printf("|***************************************************************|\n");
@@ -85,3 +87,5 @@ int main() {
 
     return 0;
 }
+
+
