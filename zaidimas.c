@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "klausimai.h"
+#include "zaidejas.h"
 
 
 int main() {
@@ -14,14 +15,21 @@ int main() {
 
     const char *failoVardas = "lengvas_lygis.txt";
     int skaiciuotiKlausimus;
-    int zaidejoTaskai = 0;
 
+    char zaidejoVardas[VARDO_ILGIS];
     printf("|***************************************************************|\n");
-    printf("                   Sveiki atvykę į žaidimą.\n");
+    printf("            Sveiki atvykę į viktoriną įstatant operacijas!\n");
+    printf("                     Įveskite savo vardą: ");
+    scanf("%s", zaidejoVardas);
+    printf("|***************************************************************|\n");
+    
+
+    int zaidejoTaskai = skaitytiTaskus(zaidejoVardas);
+    printf("            Sveiki, %s! Jūsų turimi taškai: %d\n", zaidejoVardas, zaidejoTaskai);
+
     printf("            Paspauskite enter, kad pradėtumėte žaidimą...\n");
     printf("|***************************************************************|\n");
-    while (_getch() != '\r') // // Padaro, kad žaidėjas nieko negalėtų įvesti, kol nepaspaudė enter
-    { 
+    while (_getch() != '\r') {
     }
 
     Klausimas *klausimai = uzkrautiKlausimusIrAtsakymus(failoVardas, &skaiciuotiKlausimus);
@@ -62,7 +70,7 @@ int main() {
                 tinkamasAtsakymas = 1; // Tinkama įvestis, uždarome žaidimą
                 zaidimasVyksta = 0;
                 printf("|***************************************************************|\n");
-                printf("            Žaidimas baigtas! Iš viso surinkote: %d taškų\n", zaidejoTaskai);
+                printf("            Žaidimas baigtas! Iš viso turite: %d taškų\n", zaidejoTaskai);
                 printf("|***************************************************************|\n");
             }
             else
@@ -75,6 +83,9 @@ int main() {
         }
 
     }
+
+    // Įrašo žaidėjo surinktus taškus į failą
+    irasytiTaskus(zaidejoVardas, zaidejoTaskai);
 
     // Atlaisvina atmintį
     atlaisvintiAtminti(klausimai);
