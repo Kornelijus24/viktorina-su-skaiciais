@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include "klausimai.h"
 #include "zaidejas.h"
+#include "lygiai.h"
 
 
 int main() {
@@ -13,7 +14,6 @@ int main() {
     system("chcp 65001 > nul");
     setlocale(LC_ALL, ".UTF-8");
 
-    const char *failoVardas = "lengvas_lygis.txt";
     int skaiciuotiKlausimus;
 
     char zaidejoVardas[VARDO_ILGIS];
@@ -27,10 +27,10 @@ int main() {
     int zaidejoTaskai = skaitytiTaskus(zaidejoVardas);
     printf("            Sveiki, %s! Jūsų turimi taškai: %d\n", zaidejoVardas, zaidejoTaskai);
 
-    printf("            Paspauskite enter, kad pradėtumėte žaidimą...\n");
-    printf("|***************************************************************|\n");
-    while (_getch() != '\r') {
-    }
+    SunkumoLygis *lygiai = gautiLygius();
+    int pasirinktasLygis = pasirinktiSunkumoLygi(zaidejoTaskai, lygiai);
+
+    const char *failoVardas = lygiai[pasirinktasLygis].failoVardas;
 
     Klausimas *klausimai = uzkrautiKlausimusIrAtsakymus(failoVardas, &skaiciuotiKlausimus);
 
@@ -89,6 +89,9 @@ int main() {
 
     // Atlaisvina atmintį
     atlaisvintiAtminti(klausimai);
+
+    free(lygiai); // Atlaisviname lygio masyvą
+    printf("Žaidimas baigtas! Jūsų galutiniai taškai: %d\n", zaidejoTaskai);
 
     printf("            Paspauskite Enter, kad uždarytumėte žaidimą...\n");
     printf("|***************************************************************|\n");
