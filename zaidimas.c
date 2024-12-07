@@ -7,6 +7,7 @@
 #include "zaidejas.h"
 #include "lygiai.h"
 #include "spalvos.h"
+#include "pasiekimai.h"
 
 
 int main() 
@@ -16,12 +17,18 @@ int main()
     setlocale(LC_ALL, ".UTF-8");
 
     int skaiciuotiKlausimus;
-
+    int zaidejoTaskai = 0, suzaistiRoundai = 0;
     char zaidejoVardas[VARDO_ILGIS];
+
+    // Užkrauti pasiekimus
+    uzkrautiPasiekimus();
+
+
     parodytiPradziosEkrana();
     scanf("%s", zaidejoVardas);
 
-    int zaidejoTaskai = skaitytiTaskus(zaidejoVardas);
+    skaitytiTaskusIrRoundus(zaidejoVardas, &zaidejoTaskai, &suzaistiRoundai);
+    patikrintiPasiekimusPrisijungus(zaidejoTaskai, suzaistiRoundai);
     
 
     while (1) 
@@ -48,6 +55,9 @@ int main()
                 // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
                 pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai);
                 strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
+
+                // Pridedamas sužaistas roundas
+                suzaistiRoundai++;
 
                 char atsakymas[10];
                 int tinkamasAtsakymas = 0;
@@ -87,7 +97,20 @@ int main()
             }
 
             // Įrašo žaidėjo surinktus taškus į failą
-            irasytiTaskus(zaidejoVardas, zaidejoTaskai);
+            irasytiTaskusIrRoundus(zaidejoVardas, zaidejoTaskai, suzaistiRoundai);
+            
+            // Patikrina žaidėjo pasiekimus
+            patikrintiPasiekimusPoZaidimo(zaidejoTaskai, suzaistiRoundai);
+        }
+
+        if (pasirinkimas == 2)
+        {
+            ;
+        }
+        
+        if (pasirinkimas == 3)
+        {
+            parodytiPasiekimus();
         }
 
         if (pasirinkimas == 4) 

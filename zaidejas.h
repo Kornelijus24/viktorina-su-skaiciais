@@ -5,7 +5,7 @@
 #define TASKU_FAILAS "zaideju_taskai.txt"
 
 // Funkcijų prototipai
-int skaitytiTaskus(const char *vardas);
-void irasytiTaskus(const char *vardas, int taskai);
+void skaitytiTaskusIrRoundus(const char *vardas, int *taskai, int *roundai);
+void irasytiTaskusIrRoundus(const char *vardas, int taskai, int roundai);
 
 #endif

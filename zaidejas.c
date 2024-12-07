@@ -3,74 +3,78 @@
 #include <string.h>
 #include "zaidejas.h"
 
-// Funkcija rasti žaidėjo taškus faile
-int skaitytiTaskus(const char *vardas) {
-   FILE *failas = fopen(TASKU_FAILAS, "r");
-   if (!failas) 
-   {
-      return 0; // Jei failas neegzistuoja, grąžina 0 taškų
-   }
+// Funkcija rasti žaidėjo taškus ir sužaistus roundus faile
+void skaitytiTaskusIrRoundus(const char *vardas, int *taskai, int *roundai) 
+{
+    FILE *failas = fopen(TASKU_FAILAS, "r");
+    if (!failas) 
+    {
+        *taskai = 0;
+        *roundai = 0;
+        return;
+    }
 
-   char failoVardas[VARDO_ILGIS];
-   int taskai;
+    char failoVardas[VARDO_ILGIS];
+    int nuskaitomiTaskai, nuskaitomiRoundai;
 
-   while (fscanf(failas, "%s %d", failoVardas, &taskai) == 2) 
-   {
-      if (strcmp(failoVardas, vardas) == 0) 
-      {
-         fclose(failas);
-         return taskai; // Grąžina surastus taškus
-      }
-   }
+    while (fscanf(failas, "%s %d %d", failoVardas, &nuskaitomiTaskai, &nuskaitomiRoundai) == 3) 
+    {
+        if (strcmp(failoVardas, vardas) == 0) 
+        {
+            *taskai = nuskaitomiTaskai;
+            *roundai = nuskaitomiRoundai;
+            fclose(failas);
+            return;
+        }
+    }
 
-   fclose(failas);
-   return 0; // Jei vardas nerastas, grąžina 0 taškų
+    fclose(failas);
+    *taskai = 0;
+    *roundai = 0;
 }
 
-// Funkcija įrašyti žaidėjo surinktus taškus į failą
-void irasytiTaskus(const char *vardas, int taskai) 
+
+// Funkcija įrašyti žaidėjo taškus ir sužaistus roundus į failą
+void irasytiTaskusIrRoundus(const char *vardas, int taskai, int roundai) 
 {
     FILE *pagrindinisFailas = fopen(TASKU_FAILAS, "r");
     FILE *laikinasFailas = fopen("laikinas.txt", "w");
 
     if (!laikinasFailas) 
     {
-      perror("Nepavyko sukurti laikino failo");
-      return;
+        perror("Nepavyko sukurti laikino failo");
+        return;
     }
 
     int vardasRastas = 0;
     char failoVardas[VARDO_ILGIS];
-    int esamiTaskai;
+    int esamiTaskai, esamiRoundai;
 
-    if (pagrindinisFailas) 
+    if (pagrindinisFailas)
     {
-      // Nuskaito visus įrašus iš originalaus failo
-      while (fscanf(pagrindinisFailas, "%s %d", failoVardas, &esamiTaskai) == 2) 
-      {
-         if (strcmp(failoVardas, vardas) == 0) 
-         {
-            fprintf(laikinasFailas, "%s %d\n", vardas, taskai); // Atnaujinami žaidėjo taškai, jeigu jau toks vardas egzistuoja
-            vardasRastas = 1;
-         } 
-         else 
-         {
-            fprintf(laikinasFailas, "%s %d\n", failoVardas, esamiTaskai);
-         }
-      }
+        while (fscanf(pagrindinisFailas, "%s %d %d", failoVardas, &esamiTaskai, &esamiRoundai) == 3) 
+        {
+            if (strcmp(failoVardas, vardas) == 0) 
+            {
+                fprintf(laikinasFailas, "%s %d %d\n", vardas, taskai, roundai);
+                vardasRastas = 1;
+            } 
+            else 
+            {
+                fprintf(laikinasFailas, "%s %d %d\n", failoVardas, esamiTaskai, esamiRoundai);
+            }
+        }
+        fclose(pagrindinisFailas);
+    }
 
-      fclose(pagrindinisFailas);
-   }
+    if (!vardasRastas) 
+    {
+        fprintf(laikinasFailas, "%s %d %d\n", vardas, taskai, roundai);
+    }
 
-   // Jei žaidėjas nerastas, pridėti naują įrašą į laikiną failą
-   if (!vardasRastas) 
-   {
-      fprintf(laikinasFailas, "%s %d\n", vardas, taskai);
-   }
+    fclose(laikinasFailas);
 
-   fclose(laikinasFailas);
-
-   // Perkeliam laikino failo turinį į originalų failą
-   remove(TASKU_FAILAS);
-   rename("laikinas.txt", TASKU_FAILAS);
+    remove(TASKU_FAILAS);
+    rename("laikinas.txt", TASKU_FAILAS);
 }
+
