@@ -1,6 +1,8 @@
 #ifndef KLAUSIMAI_H
 #define KLAUSIMAI_H
 
+#include "lygiai.h"
+
 typedef struct 
 {
     char klausimas[256];
@@ -14,7 +16,7 @@ typedef struct
 Klausimas *uzkrautiKlausimusIrAtsakymus(const char *failoVardas, int *skaiciuotiKlausimus);
 Klausimas *spausdintiAtsitiktiniKlausima(Klausimas *klausimai, int skaiciuotiKlausimus);
 void atlaisvintiAtminti(Klausimas *klausimai);
-void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai);
-int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai);
+void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis);
+int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis *pasirinktasLygis);
 
 #endif

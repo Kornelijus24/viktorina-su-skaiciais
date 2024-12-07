@@ -39,6 +39,8 @@ int main()
         {
             SunkumoLygis *lygiai = gautiLygius();
             int pasirinktasLygis = pasirinktiSunkumoLygi(zaidejoTaskai, lygiai);
+            
+            system("cls"); // Išvalo ekraną
 
             const char *failoVardas = lygiai[pasirinktasLygis].failoVardas;
 
@@ -53,7 +55,7 @@ int main()
                 Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
 
                 // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
-                pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai);
+                pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai, &lygiai[pasirinktasLygis]);
                 strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
 
                 // Pridedamas sužaistas roundas
@@ -77,6 +79,7 @@ int main()
                     if (strcmp(atsakymas, "TAIP") == 0)
                     {
                         tinkamasAtsakymas = 1; // Tinkama įvestis, tęsiame žaidimą
+                        system("cls"); // Išvalo ekraną
                     }
                     else if (strcmp(atsakymas, "NE") == 0)
                     {

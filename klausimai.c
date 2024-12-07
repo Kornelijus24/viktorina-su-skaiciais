@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "klausimai.h"
 #include "spalvos.h"
+#include "lygiai.h"
 
 
 // Funkcija užkrauti klausimus iš failo 
@@ -79,7 +80,7 @@ void atlaisvintiAtminti(Klausimas *klausimai)
 }
 
 // Funkcija pakeisti "?" į įvestą žaidėjo operaciją
-void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai)
+void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis)
 {
     int klausimoIlgis = strlen(klausimas);
     int zenkluSkaicius = 0;
@@ -162,8 +163,7 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
             {
                 teisingiZenklai = strtok(teisingiZenklai, " \t\r\n");
 
-                int gautiTaskai = patikrintiAtsakymus(ivestiZenklai, teisingiZenklai);
-                printf(SPALVA_GELTONA "Jūs gavote %d taškų.\n", gautiTaskai, SPALVA_PRADINE);
+                int gautiTaskai = patikrintiAtsakymus(ivestiZenklai, teisingiZenklai, pasirinktasLygis);
                 *zaidejoTaskai += gautiTaskai;
 
                 galutinisAtsakymas = 1;
@@ -195,18 +195,55 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
 }
 
 // Funkcija patikrinti atsakymą ir pridėti taškus
-int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai) 
+int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis *pasirinktasLygis) 
 {
+    int teisingiTaskai = 0;
+    int neteisingiTaskai = 0;
 
-    if (strcmp(ivestiZenklai, teisingiZenklai) == 0) 
+    size_t ilgis = strlen(teisingiZenklai);
+
+    for (size_t i = 0; i < ilgis; i++) 
     {
-        printf(SPALVA_ZALIA "Teisingai! Jūsų atsakymas: %s\n", ivestiZenklai, SPALVA_PRADINE);
-        return 10; // Pridedami taškai
+        if (ivestiZenklai[i] == teisingiZenklai[i]) 
+        {
+            teisingiTaskai++;
+        } 
+        else 
+        {
+            neteisingiTaskai++;
+        }
+    }
+
+    int taskai = (teisingiTaskai * 5 - neteisingiTaskai * 2);
+
+    // Pridėti taškus priklausomai nuo sunkumo
+    int sunkumas;
+
+    if (strcmp(pasirinktasLygis->lygioPavadinimas, "Lengvas") == 0)
+        sunkumas = 1;
+    else if (strcmp(pasirinktasLygis->lygioPavadinimas, "Vidutinis") == 0)
+        sunkumas = 2;
+    else if (strcmp(pasirinktasLygis->lygioPavadinimas, "Sunkus") == 0)
+        sunkumas = 3;
+    else if (strcmp(pasirinktasLygis->lygioPavadinimas, "Neįmanomas") == 0)
+        sunkumas = 5;
+    else
+        sunkumas = 1;
+
+    taskai *= sunkumas;
+
+    if (taskai > 0) 
+    {
+        printf(SPALVA_ZALIA "Teisingai atspėjote ženklą!\n Jūsų atsakymas: %s\n Teisingas atsakymas: %s\n", ivestiZenklai, teisingiZenklai, SPALVA_PRADINE);
+        printf(SPALVA_ZALIA "Už šį klausimą gavote %d taškų (Sunkumo lygis: %s).\n", taskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
     } 
     else 
     {
         printf(SPALVA_RAUSVA "Neteisingai. Teisingas atsakymas: %s, Jūsų atsakymas: %s\n", teisingiZenklai, ivestiZenklai, SPALVA_PRADINE);
-        return -5; // Atimami taškai
+        printf(SPALVA_RAUSVA "Praradote %d taškų (Sunkumo lygis: %s).\n", -taskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
     }
+
+    return taskai;
 }
+
 

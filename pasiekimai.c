@@ -7,7 +7,8 @@
 Pasiekimas pasiekimai[PASIEKIMU_SKAICIUS];
 
 // Funkcija užkrauti pasiekimams
-void uzkrautiPasiekimus() {
+void uzkrautiPasiekimus() 
+{
     pasiekimai[0] = (Pasiekimas){"Mokyklinukas", "Pasiekite 10 taškų.", 10, 0, 0};
     pasiekimai[1] = (Pasiekimas){"Pradinukas", "Pasiekite 50 taškų.", 50, 0, 0};
     pasiekimai[2] = (Pasiekimas){"Studentas", "Pasiekite 100 taškų.", 100, 0, 0};
@@ -65,12 +66,10 @@ void parodytiPasiekimus()
     printf(SPALVA_MELYNA "\nPasiekimai:\n" SPALVA_PRADINE);
     for (int i = 0; i < PASIEKIMU_SKAICIUS; i++) 
     {
-        printf(SPALVA_ZALIA "%s - %s [%s]\n" SPALVA_PRADINE,
-               pasiekimai[i].pavadinimas,
-               pasiekimai[i].aprasymas,
-               pasiekimai[i].arIvykdytas ? SPALVA_ZALIA "Įvykdytas" SPALVA_PRADINE : SPALVA_RAUSVA "Neįvykdytas" SPALVA_PRADINE);
+        printf(SPALVA_ZALIA "%s - %s " SPALVA_PRADINE, pasiekimai[i].pavadinimas, pasiekimai[i].aprasymas);
+        printf(" [%s]\n", pasiekimai[i].arIvykdytas ? SPALVA_ZALIA "Įvykdytas" SPALVA_PRADINE : SPALVA_RAUSVA "Neįvykdytas" SPALVA_PRADINE);
     }
-    printf(SPALVA_ZALIA "\nPaspauskite Enter, kad sugrįžtumėte į pagrindinį meniu.\n" SPALVA_PRADINE);
+    printf(SPALVA_GELTONA"\nPaspauskite Enter, kad sugrįžtumėte į pagrindinį meniu.\n" SPALVA_PRADINE);
     while (_getch() != '\r');
 }
 
