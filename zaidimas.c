@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h> // Lietuviškom raidėm
-#include <conio.h> // Žaidimo startui
 #include <string.h>
 #include <ctype.h>
 #include "klausimai.h"
 #include "zaidejas.h"
 #include "lygiai.h"
+#include "spalvos.h"
 
 
-int main() {
+int main() 
+{
     
     system("chcp 65001 > nul");
     setlocale(LC_ALL, ".UTF-8");
@@ -17,86 +18,105 @@ int main() {
     int skaiciuotiKlausimus;
 
     char zaidejoVardas[VARDO_ILGIS];
-    printf("|***************************************************************|\n");
-    printf("            Sveiki atvykę į viktoriną įstatant operacijas!\n");
-    printf("                     Įveskite savo vardą: ");
+    parodytiPradziosEkrana();
     scanf("%s", zaidejoVardas);
-    printf("|***************************************************************|\n");
-    
 
     int zaidejoTaskai = skaitytiTaskus(zaidejoVardas);
-    printf("            Sveiki, %s! Jūsų turimi taškai: %d\n", zaidejoVardas, zaidejoTaskai);
+    
 
-    SunkumoLygis *lygiai = gautiLygius();
-    int pasirinktasLygis = pasirinktiSunkumoLygi(zaidejoTaskai, lygiai);
-
-    const char *failoVardas = lygiai[pasirinktasLygis].failoVardas;
-
-    Klausimas *klausimai = uzkrautiKlausimusIrAtsakymus(failoVardas, &skaiciuotiKlausimus);
-
-    int zaidimasVyksta = 1;
-
-    while(zaidimasVyksta)
+    while (1) 
     {
+        int pasirinkimas = pagrindinisMeniu(zaidejoTaskai, zaidejoVardas); // Rodo pagrindinį meniu ir leidžia pasirinkti
 
-        // Atspausdina atsitiktinį klausimą
-        Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
-
-        // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
-        pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai);
-        strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
-
-        char atsakymas[10];
-        int tinkamasAtsakymas = 0;
-
-        while(!tinkamasAtsakymas)
+        if (pasirinkimas == 1)
         {
-            printf("|***************************************************************|\n");
-            printf("               Ar norite tęsti žaidimą? (Taip/Ne): \n");
-            printf("|***************************************************************|\n");
-            scanf("%9s", atsakymas);
+            SunkumoLygis *lygiai = gautiLygius();
+            int pasirinktasLygis = pasirinktiSunkumoLygi(zaidejoTaskai, lygiai);
 
-            for (int i = 0; i < 4; i++)
+            const char *failoVardas = lygiai[pasirinktasLygis].failoVardas;
+
+            Klausimas *klausimai = uzkrautiKlausimusIrAtsakymus(failoVardas, &skaiciuotiKlausimus);
+
+            int zaidimasVyksta = 1;
+
+            while(zaidimasVyksta)
             {
-                atsakymas[i] = toupper(atsakymas[i]);
+
+                // Atspausdina atsitiktinį klausimą
+                Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
+
+                // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
+                pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai);
+                strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
+
+                char atsakymas[10];
+                int tinkamasAtsakymas = 0;
+
+                while(!tinkamasAtsakymas)
+                {
+                    printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
+                    printf(SPALVA_GELTONA"Ar norite tęsti žaidimą? (Taip/Ne): \n", SPALVA_PRADINE);
+                    printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
+                    scanf("%9s", atsakymas);
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        atsakymas[i] = toupper(atsakymas[i]);
+                    }
+
+                    if (strcmp(atsakymas, "TAIP") == 0)
+                    {
+                        tinkamasAtsakymas = 1; // Tinkama įvestis, tęsiame žaidimą
+                    }
+                    else if (strcmp(atsakymas, "NE") == 0)
+                    {
+                        tinkamasAtsakymas = 1; // Tinkama įvestis, uždarome žaidimą
+                        zaidimasVyksta = 0;
+                        printf(SPALVA_MELYNA "Grįžtama į pagrindinį meniu...\n" SPALVA_PRADINE);
+                        break;
+
+                    }
+                    else
+                    {   
+                        printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
+                        printf(SPALVA_RAUSVA "Klaida: Atsakymas turi būti 'Taip' arba 'Ne'. Bandykite dar kartą.\n" SPALVA_PRADINE);
+                        printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
+                        while (getchar() != '\n'); // Išvalomas buffer
+                    }
+                }
             }
 
-            if (strcmp(atsakymas, "TAIP") == 0)
-            {
-                tinkamasAtsakymas = 1; // Tinkama įvestis, tęsiame žaidimą
-            }
-            else if (strcmp(atsakymas, "NE") == 0)
-            {
-                tinkamasAtsakymas = 1; // Tinkama įvestis, uždarome žaidimą
-                zaidimasVyksta = 0;
-                printf("|***************************************************************|\n");
-                printf("            Žaidimas baigtas! Iš viso turite: %d taškų\n", zaidejoTaskai);
-                printf("|***************************************************************|\n");
-            }
-            else
-            {   
-                printf("|***************************************************************|\n");
-                printf("Klaida: Atsakymas turi būti 'Taip' arba 'Ne'. Bandykite dar kartą.\n");
-                printf("|***************************************************************|\n");
-                while (getchar() != '\n'); // Išvalomas buffer
-            }
+            // Įrašo žaidėjo surinktus taškus į failą
+            irasytiTaskus(zaidejoVardas, zaidejoTaskai);
         }
 
-    }
+        if (pasirinkimas == 4) 
+        {
+            printf(SPALVA_MELYNA "Ar tikrai norite išeiti? (Taip/Ne): " SPALVA_PRADINE);
 
-    // Įrašo žaidėjo surinktus taškus į failą
-    irasytiTaskus(zaidejoVardas, zaidejoTaskai);
+            char atsakymas[10];
+                scanf("%9s", atsakymas);
 
-    // Atlaisvina atmintį
-    atlaisvintiAtminti(klausimai);
-
-    free(lygiai); // Atlaisviname lygio masyvą
-    printf("Žaidimas baigtas! Jūsų galutiniai taškai: %d\n", zaidejoTaskai);
-
-    printf("            Paspauskite Enter, kad uždarytumėte žaidimą...\n");
-    printf("|***************************************************************|\n");
-    while (_getch() != '\r')
-    {
+                for (int i = 0; i < 4; i++) 
+                {
+                    atsakymas[i] = toupper(atsakymas[i]);
+                }
+                if (strcmp(atsakymas, "TAIP") == 0) 
+                {
+                    printf(SPALVA_RAUSVA "Ačiū, kad žaidėte! Žaidimas uždaromas...\n" SPALVA_PRADINE);
+                    return 0;
+                } 
+                else if (strcmp(atsakymas, "NE") == 0) 
+                {
+                    printf(SPALVA_ZALIA "Grįžtama į pagrindinį meniu...\n" SPALVA_PRADINE);
+                    continue;
+                } 
+                else 
+                {
+                    printf(SPALVA_RAUSVA "Neteisingas pasirinkimas. Grįžtama į pagrindinį meniu.\n" SPALVA_PRADINE);
+                    continue;
+                }
+        } 
     }
 
     return 0;

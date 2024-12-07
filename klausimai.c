@@ -4,6 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 #include "klausimai.h"
+#include "spalvos.h"
 
 
 // Funkcija užkrauti klausimus iš failo 
@@ -66,7 +67,7 @@ Klausimas *spausdintiAtsitiktiniKlausima(Klausimas *klausimai, int skaiciuotiKla
     srand(time(NULL));
 
     int atsitiktinis = rand() % skaiciuotiKlausimus;
-    printf("                Klausimas: %s\n", klausimai[atsitiktinis].klausimas);
+    printf(SPALVA_MELYNA "                Klausimas: %s\n", klausimai[atsitiktinis].klausimas, SPALVA_PRADINE);
 
      return &klausimai[atsitiktinis]; 
 }
@@ -99,8 +100,8 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
 
     while(!galutinisAtsakymas) // Kol žaidėjas nepatvirtina atsakymo
     {
-        printf("                Įveskite %d ženklus (+, -, /, *): \n", zenkluSkaicius);
-        printf("|***************************************************************|\n");
+        printf(SPALVA_ZALIA "                Įveskite %d ženklus (+, -, /, *): \n", zenkluSkaicius, SPALVA_PRADINE);
+        printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
 
 
         for(int i = 0; i < zenkluSkaicius; i++)
@@ -110,7 +111,7 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
 
             do
             {
-                printf("Pasirinkite %d ženklą: ", i + 1);
+                printf(SPALVA_ZALIA "Pasirinkite %d ženklą: ", i + 1, SPALVA_PRADINE);
                 scanf(" %c", &ivestasZenklas);
                 while (getchar() != '\n');
 
@@ -121,9 +122,9 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
                 }
                 else
                 {
-                    printf("|***************************************************************|\n");
-                    printf("\nKlaida: Įvestas ženklas neegzistuoja. Pasirinkite ženklą. (+, -, *, /)\n");
-                    printf("|***************************************************************|\n");
+                    printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+                    printf(SPALVA_RAUSVA "\nKlaida: Įvestas ženklas neegzistuoja. Pasirinkite ženklą. (+, -, *, /)\n", SPALVA_PRADINE);
+                    printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
                 }
                     
             } while(!tinkamas);
@@ -141,15 +142,15 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
             }
         }
 
-        printf("|***************************************************************|\n");
-        printf("Jūsų įvesti ženklai: %s\n", klausimas);
+        printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+        printf(SPALVA_ZALIA"Jūsų įvesti ženklai: %s\n", klausimas, SPALVA_PRADINE);
 
 
         while(galutinisAtsakymas != 1)
         {
             char atsakymas[10];
-            printf("Ar tai Jūsų galutinis atsakymas? (Taip/Ne): \n");
-            printf("|***************************************************************|\n");
+            printf(SPALVA_ZALIA "Ar tai Jūsų galutinis atsakymas? (Taip/Ne): \n", SPALVA_PRADINE);
+            printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
             scanf("%9s", atsakymas);
             while (getchar() != '\n');
             
@@ -162,7 +163,7 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
                 teisingiZenklai = strtok(teisingiZenklai, " \t\r\n");
 
                 int gautiTaskai = patikrintiAtsakymus(ivestiZenklai, teisingiZenklai);
-                printf("Jūs gavote %d taškų.\n", gautiTaskai);
+                printf(SPALVA_GELTONA "Jūs gavote %d taškų.\n", gautiTaskai, SPALVA_PRADINE);
                 *zaidejoTaskai += gautiTaskai;
 
                 galutinisAtsakymas = 1;
@@ -171,18 +172,18 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
             }
             else if(strcmp(atsakymas, "NE") == 0)
             {
-                printf("|***************************************************************|\n");
-                printf("                Pakartokite ženklų įvedimą.\n");
+                printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+                printf(SPALVA_GELTONA "                Pakartokite ženklų įvedimą.\n", SPALVA_PRADINE);
                 // Atstatomas klausimas su '?'
                 strcpy(klausimas, pradinisKlausimas);
-                printf("                Klausimas: %s\n", klausimas);
+                printf(SPALVA_MELYNA "                Klausimas: %s\n", klausimas, SPALVA_PRADINE);
                 break;
             }
             else
             {
-                printf("|***************************************************************|\n");
-                printf("Klaida: Atsakymas turi būti 'Taip' arba 'Ne'. Bandykite dar kartą.\n");
-                printf("|***************************************************************|\n");
+                printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+                printf(SPALVA_RAUSVA "Klaida: Atsakymas turi būti 'Taip' arba 'Ne'. Bandykite dar kartą.\n", SPALVA_PRADINE);
+                printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
             }
             
         }
@@ -199,12 +200,12 @@ int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai)
 
     if (strcmp(ivestiZenklai, teisingiZenklai) == 0) 
     {
-        printf("Teisingai! Jūsų atsakymas: %s\n", ivestiZenklai);
+        printf(SPALVA_ZALIA "Teisingai! Jūsų atsakymas: %s\n", ivestiZenklai, SPALVA_PRADINE);
         return 10; // Pridedami taškai
     } 
     else 
     {
-        printf("Neteisingai. Teisingas atsakymas: %s, Jūsų atsakymas: %s\n", teisingiZenklai, ivestiZenklai);
+        printf(SPALVA_RAUSVA "Neteisingai. Teisingas atsakymas: %s, Jūsų atsakymas: %s\n", teisingiZenklai, ivestiZenklai, SPALVA_PRADINE);
         return -5; // Atimami taškai
     }
 }

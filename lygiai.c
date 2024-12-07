@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "lygiai.h"
+#include "spalvos.h"
 
 
 // Sukuria ir grąžina sunkumo lygius
@@ -28,17 +29,17 @@ SunkumoLygis *gautiLygius(void) {
 
 // Funkcija parodyti visus lygius ir kiek žaidėjui reikia taškų, kad galėtų pasirinkti tą lygį
 int pasirinktiSunkumoLygi(int zaidejoTaskai, SunkumoLygis *lygiai) {
-    printf("|***************************************************************|\n");
-    printf(" Pasirinkite sunkumo lygį:\n");
+    printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+    printf(SPALVA_GELTONA " Pasirinkite sunkumo lygį:\n", SPALVA_PRADINE);
 
     for (int i = 0; i < LYGIU_SK; i++) {
         if (zaidejoTaskai >= lygiai[i].lygioTaskai) 
         {
-            printf(" %d. %s\n", i + 1, lygiai[i].lygioPavadinimas);
+            printf(SPALVA_ZALIA " %d. %s\n", i + 1, lygiai[i].lygioPavadinimas, SPALVA_PRADINE);
         } 
         else 
         {
-            printf(" %d. %s (Reikia turėti %d taškų)\n", i + 1, lygiai[i].lygioPavadinimas, lygiai[i].lygioTaskai);
+            printf(SPALVA_ZALIA " %d. %s (Reikia turėti %d taškų)\n", i + 1, lygiai[i].lygioPavadinimas, lygiai[i].lygioTaskai, SPALVA_PRADINE);
         }
     }
 
@@ -47,14 +48,14 @@ int pasirinktiSunkumoLygi(int zaidejoTaskai, SunkumoLygis *lygiai) {
 
     while (!tinkamaIvestis) 
     {
-        printf("|***************************************************************|\n");
-        printf(" Įveskite pasirinkto lygio numerį: ");
+        printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+        printf(SPALVA_GELTONA " Įveskite pasirinkto lygio numerį: ", SPALVA_PRADINE);
 
         
         if (scanf("%d", &pasirinkimas) != 1) 
         {
-            printf("Klaida: Įveskite tinkamą skaičių.\n");
-            printf("|***************************************************************|\n");
+            printf(SPALVA_RAUSVA "Klaida: Įveskite tinkamą skaičių.\n", SPALVA_PRADINE);
+            printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
             while (getchar() != '\n');
             continue;
         }
@@ -68,12 +69,12 @@ int pasirinktiSunkumoLygi(int zaidejoTaskai, SunkumoLygis *lygiai) {
             } 
             else 
             {
-                printf("Klaida: Neturite pakankamai taškų šiam lygiui pasirinkti.\n");
+                printf(SPALVA_RAUSVA "Klaida: Neturite pakankamai taškų šiam lygiui pasirinkti.\n", SPALVA_PRADINE);
             }
         } 
         else 
         {
-            printf("Klaida: Pasirinkimas turi būti tarp 1 ir %d.\n", LYGIU_SK);
+            printf(SPALVA_RAUSVA "Klaida: Pasirinkimas turi būti tarp 1 ir %d.\n", LYGIU_SK, SPALVA_PRADINE);
         }
     }
 
