@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #include "spalvos.h"
+#include "zaidejas.h"
 
 // Funkcija parodyti pradžios ekraną
 void parodytiPradziosEkrana() 
@@ -57,7 +58,8 @@ void parodytiPagrindiniMeniu(const char *zaidejoVardas)
     printf(SPALVA_GELTONA "  1. Pradėti žaidimą\n" SPALVA_PRADINE);
     printf(SPALVA_GELTONA "  2. Turimi taškai\n" SPALVA_PRADINE);
     printf(SPALVA_GELTONA "  3. Pasiekimai\n" SPALVA_PRADINE);
-    printf(SPALVA_GELTONA "  4. Palikti žaidimą\n" SPALVA_PRADINE);
+    printf(SPALVA_GELTONA "  4. Turnyrinė lentelė\n" SPALVA_PRADINE);
+    printf(SPALVA_GELTONA "  5. Palikti žaidimą\n" SPALVA_PRADINE);
     printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
     printf(SPALVA_ZALIA "  Pasirinkite opciją: " SPALVA_PRADINE);
 }
@@ -89,11 +91,11 @@ int pagrindinisMeniu(int zaidejoTaskai, const char *zaidejoVardas)
         system("cls"); // Išvalo ekraną
         parodytiPagrindiniMeniu(zaidejoVardas);
 
-        if (scanf("%d", &pasirinkimas) != 1 || pasirinkimas < 1 || pasirinkimas > 4)
+        if (scanf("%d", &pasirinkimas) != 1 || pasirinkimas < 1 || pasirinkimas > 5)
         {
             while (getchar() != '\n')
                 ; // Išvalo bufferį
-            printf(SPALVA_RAUSVA "  Klaida: Pasirinkimas turi būti 1, 2, 3 arba 4.\n" SPALVA_PRADINE);
+            printf(SPALVA_RAUSVA "  Klaida: Pasirinkimas turi būti 1, 2, 3, 4, 5.\n" SPALVA_PRADINE);
             printf(SPALVA_ZALIA "  Paspauskite Enter ir bandykite dar kartą.\n" SPALVA_PRADINE);
             while (_getch() != '\r')
                 ;
@@ -111,13 +113,18 @@ int pagrindinisMeniu(int zaidejoTaskai, const char *zaidejoVardas)
         printf(SPALVA_ZALIA "Pradedamas žaidimas...\n" SPALVA_PRADINE);
         break;
     case 2:
-        parodytiTaskus(zaidejoTaskai);
+        system("cls");
         break;
     case 3:
+        system("cls");
         break;
     case 4:
         system("cls");
+        break;
+    case 5:
+        system("cls");
         parodytiPabaigosEkrana(zaidejoTaskai);
+
     }
     return pasirinkimas;
 }

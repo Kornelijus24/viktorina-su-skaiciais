@@ -1,4 +1,4 @@
 Kornelijus 17 8
-Martynas 10 10
-Karolis 10 10
-Antanas 15 10
+Martynas 20 10
+Karolis 30 10
+Antanas 19 10

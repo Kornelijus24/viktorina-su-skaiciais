@@ -108,15 +108,19 @@ int main()
 
         if (pasirinkimas == 2)
         {
-            ;
+            parodytiTaskus(zaidejoTaskai);
         }
         
         if (pasirinkimas == 3)
         {
             parodytiPasiekimus();
         }
+        if(pasirinkimas == 4)
+        {
+            spausdintiLyderiuLenta();
+        }
 
-        if (pasirinkimas == 4) 
+        if (pasirinkimas == 5) 
         {
             printf(SPALVA_MELYNA "Ar tikrai norite išeiti? (Taip/Ne): " SPALVA_PRADINE);
 
