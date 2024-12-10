@@ -9,12 +9,13 @@ typedef struct
     char vardas[VARDO_ILGIS];
     int taskai;
     int suzaistiRoundai;
+    int ilgiausiaSerija;
 } Lyderis;
 
 
 // Funkcijų prototipai
-void skaitytiTaskusIrRoundus(const char *vardas, int *taskai, int *roundai);
-void irasytiTaskusIrRoundus(const char *vardas, int taskai, int roundai);
+void skaitytiTaskusIrRoundus(const char *vardas, int *taskai, int *roundai, int *ilgiausiaSerija);
+void irasytiTaskusIrRoundus(const char *vardas, int taskai, int roundai, int ilgiausiaSerija);
 void spausdintiLyderiuLenta();
 
 #endif

@@ -17,7 +17,7 @@ int main()
     setlocale(LC_ALL, ".UTF-8");
 
     int skaiciuotiKlausimus;
-    int zaidejoTaskai = 0, suzaistiRoundai = 0;
+    int zaidejoTaskai = 0, suzaistiRoundai = 0, ilgiausiaSerija = 0;
     char zaidejoVardas[VARDO_ILGIS];
 
     // Užkrauti pasiekimus
@@ -27,8 +27,8 @@ int main()
     parodytiPradziosEkrana();
     scanf("%s", zaidejoVardas);
 
-    skaitytiTaskusIrRoundus(zaidejoVardas, &zaidejoTaskai, &suzaistiRoundai);
-    patikrintiPasiekimusPrisijungus(zaidejoTaskai, suzaistiRoundai);
+    skaitytiTaskusIrRoundus(zaidejoVardas, &zaidejoTaskai, &suzaistiRoundai, &ilgiausiaSerija);
+    patikrintiPasiekimusPrisijungus(zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
     
 
     while (1) 
@@ -55,7 +55,7 @@ int main()
                 Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
 
                 // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
-                pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai, &lygiai[pasirinktasLygis]);
+                pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai, &lygiai[pasirinktasLygis], &ilgiausiaSerija);
                 strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
 
                 // Pridedamas sužaistas roundas
@@ -100,10 +100,10 @@ int main()
             }
 
             // Įrašo žaidėjo surinktus taškus į failą
-            irasytiTaskusIrRoundus(zaidejoVardas, zaidejoTaskai, suzaistiRoundai);
+            irasytiTaskusIrRoundus(zaidejoVardas, zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
             
             // Patikrina žaidėjo pasiekimus
-            patikrintiPasiekimusPoZaidimo(zaidejoTaskai, suzaistiRoundai);
+            patikrintiPasiekimusPoZaidimo(zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
         }
 
         if (pasirinkimas == 2)

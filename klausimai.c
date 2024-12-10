@@ -80,7 +80,7 @@ void atlaisvintiAtminti(Klausimas *klausimai)
 }
 
 // Funkcija pakeisti "?" į įvestą žaidėjo operaciją
-void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis)
+void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis, int *ilgiausiaSerija)
 {
     int klausimoIlgis = strlen(klausimas);
     int zenkluSkaicius = 0;
@@ -164,6 +164,16 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
                 teisingiZenklai = strtok(teisingiZenklai, " \t\r\n");
 
                 int gautiTaskai = patikrintiAtsakymus(ivestiZenklai, teisingiZenklai, pasirinktasLygis);
+
+                if(gautiTaskai > 0)
+                {
+                    *ilgiausiaSerija += 1; // Skaičiuojami laimėti roundai iš eilės
+                }
+                else
+                {
+                    *ilgiausiaSerija = 0; // Atstatomi laimėjimai iš eilės
+                }
+
                 *zaidejoTaskai += gautiTaskai;
 
                 galutinisAtsakymas = 1;

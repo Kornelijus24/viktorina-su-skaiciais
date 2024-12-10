@@ -14,15 +14,15 @@ SunkumoLygis *gautiLygius(void) {
 
     lygiai[1].failoVardas = "vidutinis_lygis.txt";
     lygiai[1].lygioPavadinimas = "Vidutinis";
-    lygiai[1].lygioTaskai = 50;
+    lygiai[1].lygioTaskai = 100;
 
     lygiai[2].failoVardas = "sunkus_lygis.txt";
     lygiai[2].lygioPavadinimas = "Sunkus";
-    lygiai[2].lygioTaskai = 100;
+    lygiai[2].lygioTaskai = 300;
 
     lygiai[3].failoVardas = "neimanomas_lygis.txt";
     lygiai[3].lygioPavadinimas = "Neįmanomas";
-    lygiai[3].lygioTaskai = 200;
+    lygiai[3].lygioTaskai = 500;
 
     return lygiai;
 }
