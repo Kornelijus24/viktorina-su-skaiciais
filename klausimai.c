@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <windows.h>
 #include "klausimai.h"
 #include "spalvos.h"
 #include "lygiai.h"
@@ -80,6 +81,25 @@ void atlaisvintiAtminti(Klausimas *klausimai)
 }
 
 // Funkcija pakeisti "?" į įvestą žaidėjo operaciją
+
+// Funkcija animacijai su spalvų perėjimu, skirta „Neįmanomam“ lygiui
+void rodytiNeimanomaLygi()
+{
+    const char *tekstas = "NEIMANOMAS LYGIS!";
+    const int delay = 200; // milisekundes
+
+    system("cls");
+    printf(SPALVA_RAUSVA "|****************************************************************************************************|\n" SPALVA_PRADINE);
+
+    for (int i = 0; i < strlen(tekstas); i++)
+    {
+        printf(SPALVA_RAUSVA "%c" SPALVA_PRADINE, tekstas[i]);
+        fflush(stdout);
+        Sleep(delay);
+    }
+    while (getchar() != '\n') {}
+}
+
 void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis, int *ilgiausiaSerija)
 {
     int klausimoIlgis = strlen(klausimas);

@@ -18,5 +18,5 @@ Klausimas *spausdintiAtsitiktiniKlausima(Klausimas *klausimai, int skaiciuotiKla
 void atlaisvintiAtminti(Klausimas *klausimai);
 void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis, int *ilgiausiaSerija);
 int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis *pasirinktasLygis);
-
+void rodytiNeimanomaLygi();
 #endif
