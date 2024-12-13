@@ -29,6 +29,7 @@ int main()
 
     skaitytiTaskusIrRoundus(zaidejoVardas, &zaidejoTaskai, &suzaistiRoundai, &ilgiausiaSerija);
     patikrintiPasiekimusPrisijungus(zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
+    
 
     while (1) 
     {
@@ -38,12 +39,7 @@ int main()
         {
             SunkumoLygis *lygiai = gautiLygius();
             int pasirinktasLygis = pasirinktiSunkumoLygi(zaidejoTaskai, lygiai);
-
-            // Jei pasirinktas lygis yra "Neįmanomas", paleidžiame animaciją
-            if (strcmp(lygiai[pasirinktasLygis].lygioPavadinimas, "Neįmanomas") == 0) {
-                rodytiNeimanomaLygi();
-            }
-
+            
             system("cls"); // Išvalo ekraną
 
             const char *failoVardas = lygiai[pasirinktasLygis].failoVardas;
@@ -52,8 +48,9 @@ int main()
 
             int zaidimasVyksta = 1;
 
-            while (zaidimasVyksta)
+            while(zaidimasVyksta)
             {
+
                 // Atspausdina atsitiktinį klausimą
                 Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
 
@@ -67,10 +64,10 @@ int main()
                 char atsakymas[10];
                 int tinkamasAtsakymas = 0;
 
-                while (!tinkamasAtsakymas)
+                while(!tinkamasAtsakymas)
                 {
                     printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
-                    printf(SPALVA_GELTONA "Ar norite tęsti žaidimą? (Taip/Ne): \n" SPALVA_PRADINE);
+                    printf(SPALVA_GELTONA"Ar norite tęsti žaidimą? (Taip/Ne): \n", SPALVA_PRADINE);
                     printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
                     scanf("%9s", atsakymas);
 
@@ -90,9 +87,10 @@ int main()
                         zaidimasVyksta = 0;
                         printf(SPALVA_MELYNA "Grįžtama į pagrindinį meniu...\n" SPALVA_PRADINE);
                         break;
+
                     }
                     else
-                    {
+                    {   
                         printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
                         printf(SPALVA_RAUSVA "Klaida: Atsakymas turi būti 'Taip' arba 'Ne'. Bandykite dar kartą.\n" SPALVA_PRADINE);
                         printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
@@ -103,7 +101,7 @@ int main()
 
             // Įrašo žaidėjo surinktus taškus į failą
             irasytiTaskusIrRoundus(zaidejoVardas, zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
-
+            
             // Patikrina žaidėjo pasiekimus
             patikrintiPasiekimusPoZaidimo(zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
         }
@@ -112,12 +110,12 @@ int main()
         {
             parodytiTaskus(zaidejoTaskai);
         }
-
+        
         if (pasirinkimas == 3)
         {
             parodytiPasiekimus();
         }
-        if (pasirinkimas == 4)
+        if(pasirinkimas == 4)
         {
             spausdintiLyderiuLenta();
         }
@@ -127,29 +125,31 @@ int main()
             printf(SPALVA_MELYNA "Ar tikrai norite išeiti? (Taip/Ne): " SPALVA_PRADINE);
 
             char atsakymas[10];
-            scanf("%9s", atsakymas);
+                scanf("%9s", atsakymas);
 
-            for (int i = 0; i < 4; i++) 
-            {
-                atsakymas[i] = toupper(atsakymas[i]);
-            }
-            if (strcmp(atsakymas, "TAIP") == 0) 
-            {
-                printf(SPALVA_RAUSVA "Ačiū, kad žaidėte! Žaidimas uždaromas...\n" SPALVA_PRADINE);
-                return 0;
-            } 
-            else if (strcmp(atsakymas, "NE") == 0) 
-            {
-                printf(SPALVA_ZALIA "Grįžtama į pagrindinį meniu...\n" SPALVA_PRADINE);
-                continue;
-            } 
-            else 
-            {
-                printf(SPALVA_RAUSVA "Neteisingas pasirinkimas. Grįžtama į pagrindinį meniu.\n" SPALVA_PRADINE);
-                continue;
-            }
+                for (int i = 0; i < 4; i++) 
+                {
+                    atsakymas[i] = toupper(atsakymas[i]);
+                }
+                if (strcmp(atsakymas, "TAIP") == 0) 
+                {
+                    printf(SPALVA_RAUSVA "Ačiū, kad žaidėte! Žaidimas uždaromas...\n" SPALVA_PRADINE);
+                    return 0;
+                } 
+                else if (strcmp(atsakymas, "NE") == 0) 
+                {
+                    printf(SPALVA_ZALIA "Grįžtama į pagrindinį meniu...\n" SPALVA_PRADINE);
+                    continue;
+                } 
+                else 
+                {
+                    printf(SPALVA_RAUSVA "Neteisingas pasirinkimas. Grįžtama į pagrindinį meniu.\n" SPALVA_PRADINE);
+                    continue;
+                }
         } 
     }
 
     return 0;
 }
+
+

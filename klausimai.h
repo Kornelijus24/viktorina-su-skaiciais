@@ -1,5 +1,6 @@
 #ifndef KLAUSIMAI_H
 #define KLAUSIMAI_H
+
 #include "lygiai.h"
 
 typedef struct 
