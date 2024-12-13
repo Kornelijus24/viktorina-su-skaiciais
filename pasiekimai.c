@@ -51,7 +51,7 @@ void patikrintiPasiekimusPoZaidimo(int zaidejoTaskai, int suzaistiRoundai, int l
     while (_getch() != '\r');
 }
 
-// Funkcija patikrinti žaidėjo jau įvykdytus pasiekimus
+// Funkcija patikrinti žaidėjo įvykdytus pasiekimus prisijungus
 void patikrintiPasiekimusPrisijungus(int zaidejoTaskai, int suzaistiRoundai, int laimetiRoundai) 
 {
     for (int i = 0; i < PASIEKIMU_SKAICIUS; i++) 

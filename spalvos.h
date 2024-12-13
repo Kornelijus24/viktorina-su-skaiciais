@@ -13,6 +13,7 @@ void parodytiPradziosEkrana();
 void parodytiPabaigosEkrana(int zaidejoTaskai);
 void parodytiPagrindiniMeniu(const char *zaidejoVardas);
 void parodytiTaskus(int zaidejoTaskai);
+void parodytiLygioAnimacija(const char *tekstas);
 int pagrindinisMeniu(int zaidejoTaskai, const char *zaidejoVardas);
 
 #endif

@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <string.h>
+#include <windows.h>
 #include "spalvos.h"
 #include "zaidejas.h"
+#include "pasiekimai.h"
 
 // Funkcija parodyti pradžios ekraną
 void parodytiPradziosEkrana() 
@@ -75,10 +78,28 @@ void parodytiTaskus(int zaidejoTaskai)
     printf(SPALVA_ZALIA "%d\n" SPALVA_PRADINE, zaidejoTaskai);
     printf(SPALVA_GELTONA "  Grįžkite paspausdami Enter.\n" SPALVA_PRADINE);
     printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
-    while (_getch() != '\r')
-    {
+    while (_getch() != '\r');
     
+    
+}
+// Funkcija animacijai su spalvų perėjimu, skirta „Neįmanomam“ lygiui
+void parodytiLygioAnimacija(const char *tekstas)
+{
+    const int laikas = 200;
+
+    system("cls");
+    printf("|****************************************************************************************************|\n");
+
+    printf("                                        ");
+    for (int i = 0; i < strlen(tekstas); i++)
+    {
+        printf("%c", tekstas[i]);
+        fflush(stdout);
+        Sleep(laikas);
     }
+    printf("\n|****************************************************************************************************|\n");
+    printf("SPAUSKITE ENTER, KAD PRADĖTUMĖTE!\n");
+    while (_getch() != '\r');
 }
 
 // Funkcija veiksmams su pagrindiniu meniu
@@ -93,12 +114,10 @@ int pagrindinisMeniu(int zaidejoTaskai, const char *zaidejoVardas)
 
         if (scanf("%d", &pasirinkimas) != 1 || pasirinkimas < 1 || pasirinkimas > 5)
         {
-            while (getchar() != '\n')
-                ; // Išvalo bufferį
-            printf(SPALVA_RAUSVA "  Klaida: Pasirinkimas turi būti 1, 2, 3, 4, 5.\n" SPALVA_PRADINE);
+            while (getchar() != '\n');
+            printf(SPALVA_RAUSVA "  Klaida: Pasirinkimas turi būti 1, 2, 3, 4 arba 5.\n" SPALVA_PRADINE);
             printf(SPALVA_ZALIA "  Paspauskite Enter ir bandykite dar kartą.\n" SPALVA_PRADINE);
-            while (_getch() != '\r')
-                ;
+            while (_getch() != '\r');
         }
         else
         {
@@ -106,26 +125,6 @@ int pagrindinisMeniu(int zaidejoTaskai, const char *zaidejoVardas)
         }
     }
 
-    switch (pasirinkimas)
-    {
-    case 1:
-        system("cls");
-        printf(SPALVA_ZALIA "Pradedamas žaidimas...\n" SPALVA_PRADINE);
-        break;
-    case 2:
-        system("cls");
-        break;
-    case 3:
-        system("cls");
-        break;
-    case 4:
-        system("cls");
-        break;
-    case 5:
-        system("cls");
-        parodytiPabaigosEkrana(zaidejoTaskai);
-
-    }
     return pasirinkimas;
 }
 

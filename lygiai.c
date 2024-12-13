@@ -4,6 +4,7 @@
 #include "spalvos.h"
 
 
+
 // Sukuria ir grąžina sunkumo lygius
 SunkumoLygis *gautiLygius(void) {
     SunkumoLygis *lygiai = (SunkumoLygis *)malloc(sizeof(SunkumoLygis) * LYGIU_SK);

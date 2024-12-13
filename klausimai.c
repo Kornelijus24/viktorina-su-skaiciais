@@ -80,31 +80,14 @@ void atlaisvintiAtminti(Klausimas *klausimai)
     free(klausimai);
 }
 
-// Funkcija pakeisti "?" į įvestą žaidėjo operaciją
-
-// Funkcija animacijai su spalvų perėjimu, skirta „Neįmanomam“ lygiui
-void rodytiNeimanomaLygi()
-{
-    const char *tekstas = "NEIMANOMAS LYGIS!";
-    const int delay = 200; // milisekundes
-
-    system("cls");
-    printf(SPALVA_RAUSVA "|****************************************************************************************************|\n" SPALVA_PRADINE);
-
-    for (int i = 0; i < strlen(tekstas); i++)
-    {
-        printf(SPALVA_RAUSVA "%c" SPALVA_PRADINE, tekstas[i]);
-        fflush(stdout);
-        Sleep(delay);
-    }
-    while (getchar() != '\n') {}
-}
-
+// Funkcija pakeisti ženklus ir pridėti taškus
 void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis, int *ilgiausiaSerija)
 {
+    // Apskaičiuojamas klausimo ilgis
     int klausimoIlgis = strlen(klausimas);
     int zenkluSkaicius = 0;
 
+    // Suskaičiuojami visi '?' klausime
     for(int i = 0; i < klausimoIlgis; i++)
     {
         if(klausimas[i] == '?')
@@ -113,33 +96,40 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
         }
     }
 
+    // Sukuriama dinaminė atmintis įvestiems ženklams saugoti
     char *ivestiZenklai = (char *)malloc(sizeof(char) * (zenkluSkaicius + 1));
     ivestiZenklai[zenkluSkaicius] = '\0';
-    int galutinisAtsakymas = 0;
-    char *pradinisKlausimas = (char *)malloc(sizeof(char) * (klausimoIlgis + 1));
-    strcpy(pradinisKlausimas, klausimas); // Nukopijuojamas pradinis klausimas su '?'
 
-    while(!galutinisAtsakymas) // Kol žaidėjas nepatvirtina atsakymo
+    int galutinisAtsakymas = 0;
+
+    // Nukopijuojamas pradinis klausimas
+    char *pradinisKlausimas = (char *)malloc(sizeof(char) * (klausimoIlgis + 1));
+    strcpy(pradinisKlausimas, klausimas);
+
+    // Kol žaidėjas nepatvirtina atsakymo
+    while(!galutinisAtsakymas) 
     {
         printf(SPALVA_ZALIA "                Įveskite %d ženklus (+, -, /, *): \n", zenkluSkaicius, SPALVA_PRADINE);
         printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
 
-
+        // Ženklų įvedimas
         for(int i = 0; i < zenkluSkaicius; i++)
         {
             char ivestasZenklas;
             int tinkamas = 0;
 
+            // Žaidėjas įveda tinkamą ženklą
             do
             {
                 printf(SPALVA_ZALIA "Pasirinkite %d ženklą: ", i + 1, SPALVA_PRADINE);
                 scanf(" %c", &ivestasZenklas);
                 while (getchar() != '\n');
-
+                
+                // Tikrinama, ar įvestas ženklas yra vienas iš leistinų
                 if(ivestasZenklas == '+' || ivestasZenklas == '-' || ivestasZenklas == '*' || ivestasZenklas == '/')
                 {
-                    ivestiZenklai[i] = ivestasZenklas;
-                    tinkamas = 1;
+                    ivestiZenklai[i] = ivestasZenklas; // Išsaugomas ženklas masyve
+                    tinkamas = 1; // Pažymima, kad įvestas ženklas yra tinkamas
                 }
                 else
                 {
@@ -166,7 +156,7 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
         printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
         printf(SPALVA_ZALIA"Jūsų įvesti ženklai: %s\n", klausimas, SPALVA_PRADINE);
 
-
+        // Patikrinama, ar tai galutinis atsakymas
         while(galutinisAtsakymas != 1)
         {
             char atsakymas[10];
@@ -179,8 +169,11 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
             {
                 atsakymas[i] = toupper(atsakymas[i]);
             }
+
+            // Jei atsakymas "TAIP", patikrinamas atsakymas ir atnaujinami taškai
             if(strcmp(atsakymas, "TAIP") == 0)
             {
+                // Pašalinami nereikalingi tarpai iš teisingų ženklų
                 teisingiZenklai = strtok(teisingiZenklai, " \t\r\n");
 
                 int gautiTaskai = patikrintiAtsakymus(ivestiZenklai, teisingiZenklai, pasirinktasLygis);
@@ -188,10 +181,15 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
                 if(gautiTaskai > 0)
                 {
                     *ilgiausiaSerija += 1; // Skaičiuojami laimėti roundai iš eilės
+                    printf(SPALVA_ZALIA "Teisingai atspėjote ženklą!\n Jūsų atsakymas: %s\n Teisingas atsakymas: %s\n", ivestiZenklai, teisingiZenklai, SPALVA_PRADINE);
+                    printf(SPALVA_ZALIA "Už šį klausimą gavote %d taškų (Sunkumo lygis: %s).\n", gautiTaskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
+    
                 }
-                else
+                else 
                 {
                     *ilgiausiaSerija = 0; // Atstatomi laimėjimai iš eilės
+                    printf(SPALVA_RAUSVA "Neteisingai. Teisingas atsakymas: %s, Jūsų atsakymas: %s\n", teisingiZenklai, ivestiZenklai, SPALVA_PRADINE);
+                    printf(SPALVA_RAUSVA "Praradote %d taškų (Sunkumo lygis: %s).\n", -gautiTaskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
                 }
 
                 *zaidejoTaskai += gautiTaskai;
@@ -200,10 +198,12 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
                 
                 break;
             }
+            // Jei atsakymas "NE", leidžiama pakartoti įvestį
             else if(strcmp(atsakymas, "NE") == 0)
             {
                 printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
                 printf(SPALVA_GELTONA "                Pakartokite ženklų įvedimą.\n", SPALVA_PRADINE);
+
                 // Atstatomas klausimas su '?'
                 strcpy(klausimas, pradinisKlausimas);
                 printf(SPALVA_MELYNA "                Klausimas: %s\n", klausimas, SPALVA_PRADINE);
@@ -220,9 +220,116 @@ void pakeistiZenklaIrPridetiTaskus(char *klausimas, char *teisingiZenklai, int *
 
     }
 
+    // Išlaisvinama dinaminė atmintis
     free(ivestiZenklai);
     free(pradinisKlausimas);
 }
+
+// Funkcija skirta neįmanomam lygiui
+void neimanomasLygis(char *klausimas, char *teisingiZenklai, int *zaidejoTaskai, SunkumoLygis *pasirinktasLygis, int *ilgiausiaSerija) 
+{
+    // Suskaičiuojamas klausimo ilgis
+    int klausimoIlgis = strlen(klausimas);
+    int zenkluSkaicius = 0;
+
+    // Apskaičiuojama, kiek ženklų reikia pakeisti
+    for (int i = 0; i < klausimoIlgis; i++) 
+    {
+        if (klausimas[i] == '?') 
+        {
+            zenkluSkaicius++;
+        }
+    }
+
+    // Dinaminė atmintis įvestiems ženklams saugoti
+    char *ivestiZenklai = (char *)malloc(sizeof(char) * (zenkluSkaicius + 1));
+    ivestiZenklai[zenkluSkaicius] = '\0';
+
+    int laikmatis = 30; // 30 sekundžių atsakyti
+    time_t pradziosLaikas = time(NULL); // Pradedamas skaičiuoti laikas
+
+    printf(SPALVA_RAUSVA "NEĮMANOMAS LYGIS: Įveskite %d ženklus (+, -, /, *):\n", zenkluSkaicius, SPALVA_PRADINE);
+    printf(SPALVA_MELYNA "|***************************************************************|\n", SPALVA_PRADINE);
+
+    // Ciklas, skirtas ženklų įvedimui
+    for (int i = 0; i < zenkluSkaicius; i++) 
+    {
+        char ivestasZenklas;
+        int tinkamas = 0;
+
+        do 
+        {
+            // Apskaičiuojamas likęs laikas
+            int likoLaiko = laikmatis - (int)(time(NULL) - pradziosLaikas);
+
+            // Patikrinama ar nesibaigė laikas
+            if (likoLaiko <= 0) 
+            {
+                // Jei laikas baigėsi, žaidėjas praranda taškus ir roundas baigiamas
+                printf(SPALVA_RAUSVA "\nLaikas baigėsi! Nespėjote atsakyti. Prarandate 15 taškų.\n" SPALVA_PRADINE);
+                *zaidejoTaskai -= 15;
+                *ilgiausiaSerija = 0;
+                free(ivestiZenklai);
+                return;
+            }
+
+            printf(SPALVA_ZALIA "\rLaiko liko: %d sekundžių. Pasirinkite %d ženklą: ", likoLaiko, i + 1, SPALVA_PRADINE);
+            fflush(stdout);
+
+            scanf(" %c", &ivestasZenklas);
+            while (getchar() != '\n');
+
+            // Patikrinama, ar įvestas ženklas yra tinkamas
+            if (ivestasZenklas == '+' || ivestasZenklas == '-' || ivestasZenklas == '*' || ivestasZenklas == '/') 
+            {
+                ivestiZenklai[i] = ivestasZenklas;
+                tinkamas = 1;
+            } 
+            else 
+            {
+                printf(SPALVA_RAUSVA "\nKlaida: Įvestas ženklas neegzistuoja. Pasirinkite ženklą. (+, -, *, /)\n" SPALVA_PRADINE);
+            }
+        } while (!tinkamas);
+    }
+
+    ivestiZenklai[zenkluSkaicius] = '\0';
+
+    // Pakeisti '?' į įrašytus ženklus
+    for (int i = 0, j = 0; i < klausimoIlgis; i++) 
+    {
+        if (klausimas[i] == '?') 
+        {
+            klausimas[i] = ivestiZenklai[j++];
+        }
+    }
+
+    printf(SPALVA_ZALIA "\nGalutinis atsakymas užfiksuotas automatiškai dėl neįmanomo lygio.\n" SPALVA_PRADINE);
+    printf(SPALVA_ZALIA "Jūsų atsakymas: %s\n", klausimas, SPALVA_PRADINE);
+
+    // Patikrinamas atsakymas
+    teisingiZenklai = strtok(teisingiZenklai, " \t\r\n");
+    int gautiTaskai = patikrintiAtsakymus(ivestiZenklai, teisingiZenklai, pasirinktasLygis);
+
+    if (gautiTaskai > 0) 
+    {
+        *ilgiausiaSerija += 1;
+        printf(SPALVA_ZALIA "Teisingai! Jūsų atsakymas: %s\n", ivestiZenklai, SPALVA_PRADINE);
+        printf(SPALVA_ZALIA "Už šį klausimą gavote %d taškų (Sunkumo lygis: %s).\n", gautiTaskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
+    } 
+    else 
+    {
+        *ilgiausiaSerija = 0;
+        printf(SPALVA_RAUSVA "Neteisingai. Teisingas atsakymas: %s, Jūsų atsakymas: %s\n", teisingiZenklai, ivestiZenklai, SPALVA_PRADINE);
+        printf(SPALVA_RAUSVA "Praradote %d taškų (Sunkumo lygis: %s).\n", -gautiTaskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
+    }
+
+    // Pridedami žaidėjo gauti taškai
+    *zaidejoTaskai += gautiTaskai;
+
+    // Išlaisvinama dinaminė atmintis
+    free(ivestiZenklai);
+}
+
 
 // Funkcija patikrinti atsakymą ir pridėti taškus
 int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis *pasirinktasLygis) 
@@ -230,9 +337,9 @@ int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis
     int teisingiTaskai = 0;
     int neteisingiTaskai = 0;
 
-    size_t ilgis = strlen(teisingiZenklai);
+    int ilgis = strlen(teisingiZenklai);
 
-    for (size_t i = 0; i < ilgis; i++) 
+    for (int i = 0; i < ilgis; i++) 
     {
         if (ivestiZenklai[i] == teisingiZenklai[i]) 
         {
@@ -246,7 +353,7 @@ int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis
 
     int taskai = (teisingiTaskai * 5 - neteisingiTaskai * 2);
 
-    // Pridėti taškus priklausomai nuo sunkumo
+    // Pridedami ir atimami taškai priklausomai nuo sunkumo ir atsakytų ženklų
     int sunkumas;
 
     if (strcmp(pasirinktasLygis->lygioPavadinimas, "Lengvas") == 0)
@@ -261,17 +368,6 @@ int patikrintiAtsakymus(char *ivestiZenklai, char *teisingiZenklai, SunkumoLygis
         sunkumas = 1;
 
     taskai *= sunkumas;
-
-    if (taskai > 0) 
-    {
-        printf(SPALVA_ZALIA "Teisingai atspėjote ženklą!\n Jūsų atsakymas: %s\n Teisingas atsakymas: %s\n", ivestiZenklai, teisingiZenklai, SPALVA_PRADINE);
-        printf(SPALVA_ZALIA "Už šį klausimą gavote %d taškų (Sunkumo lygis: %s).\n", taskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
-    } 
-    else 
-    {
-        printf(SPALVA_RAUSVA "Neteisingai. Teisingas atsakymas: %s, Jūsų atsakymas: %s\n", teisingiZenklai, ivestiZenklai, SPALVA_PRADINE);
-        printf(SPALVA_RAUSVA "Praradote %d taškų (Sunkumo lygis: %s).\n", -taskai, pasirinktasLygis->lygioPavadinimas, SPALVA_PRADINE);
-    }
 
     return taskai;
 }

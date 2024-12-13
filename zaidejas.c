@@ -62,6 +62,17 @@ void irasytiTaskusIrRoundus(const char *vardas, int taskai, int roundai, int ilg
         {
             if (strcmp(failoVardas, vardas) == 0) 
             {
+
+                // Atnaujinti ilgiausia serija, jeigu ji didesnė už jau buvusią
+                if (ilgiausiaSerija < esamaSerija)
+                {
+                    ilgiausiaSerija = esamaSerija;
+                }
+                else if(ilgiausiaSerija > esamaSerija)
+                {
+                    esamaSerija = ilgiausiaSerija;
+                }
+
                 fprintf(laikinasFailas, "%s %d %d %d\n", vardas, taskai, roundai, ilgiausiaSerija);
                 vardasRastas = 1;
             } 
@@ -87,7 +98,8 @@ void irasytiTaskusIrRoundus(const char *vardas, int taskai, int roundai, int ilg
 // Funkcija išvesti lyderių lentą
 void spausdintiLyderiuLenta() {
     FILE *failas = fopen(TASKU_FAILAS, "r");
-    if (!failas) {
+    if (!failas) 
+    {
         printf("Lyderių lentos nepavyko sukurti.\n");
         return;
     }
@@ -96,8 +108,10 @@ void spausdintiLyderiuLenta() {
     int zaidejuKiekis = 0;
 
     char line[256];
-    while (fgets(line, sizeof(line), failas)) {
-        if (sscanf(line, "%s %d %d %d", lyderiai[zaidejuKiekis].vardas, &lyderiai[zaidejuKiekis].taskai, &lyderiai[zaidejuKiekis].suzaistiRoundai, &lyderiai[zaidejuKiekis].ilgiausiaSerija) == 4) {
+    while (fgets(line, sizeof(line), failas)) 
+    {
+        if (sscanf(line, "%s %d %d %d", lyderiai[zaidejuKiekis].vardas, &lyderiai[zaidejuKiekis].taskai, &lyderiai[zaidejuKiekis].suzaistiRoundai, &lyderiai[zaidejuKiekis].ilgiausiaSerija) == 4) 
+        {
             zaidejuKiekis++;
         }
     }

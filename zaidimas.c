@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h> // Lietuviškom raidėm
+#include <locale.h>
 #include <string.h>
 #include <ctype.h>
 #include "klausimai.h"
@@ -20,43 +20,93 @@ int main()
     int zaidejoTaskai = 0, suzaistiRoundai = 0, ilgiausiaSerija = 0;
     char zaidejoVardas[VARDO_ILGIS];
 
+    
+    // Parodo pradžios ekraną
+    parodytiPradziosEkrana();
+
+    // Žaidėjas įveda savo vardą
+    scanf("%s", zaidejoVardas);
+
+    // Nuskaito žaidėjo jau turimus taškus ir roundus(jeigu prieš tai jau žaidė)
+    skaitytiTaskusIrRoundus(zaidejoVardas, &zaidejoTaskai, &suzaistiRoundai, &ilgiausiaSerija);
+    ilgiausiaSerija = 0; // Prisijungus ilgiausia serija pradedama skaičiuoti nuo 0
+
     // Užkrauti pasiekimus
     uzkrautiPasiekimus();
 
-
-    parodytiPradziosEkrana();
-    scanf("%s", zaidejoVardas);
-
-    skaitytiTaskusIrRoundus(zaidejoVardas, &zaidejoTaskai, &suzaistiRoundai, &ilgiausiaSerija);
+    // Patikrina ar žaidėjas jau įvykdęs pasiekimus
     patikrintiPasiekimusPrisijungus(zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
     
-
     while (1) 
     {
-        int pasirinkimas = pagrindinisMeniu(zaidejoTaskai, zaidejoVardas); // Rodo pagrindinį meniu ir leidžia pasirinkti
+        // Rodo pagrindinį meniu ir leidžia žaidėjui pasirinkti
+        int pasirinkimas = pagrindinisMeniu(zaidejoTaskai, zaidejoVardas);
 
+        // Pradedamas žaidimas
         if (pasirinkimas == 1)
         {
+            system("cls");
+            printf(SPALVA_ZALIA "Pradedamas žaidimas...\n" SPALVA_PRADINE);
+
+            // Pasirenkamas sunkumo lygis
             SunkumoLygis *lygiai = gautiLygius();
             int pasirinktasLygis = pasirinktiSunkumoLygi(zaidejoTaskai, lygiai);
-            
-            system("cls"); // Išvalo ekraną
 
+            // Animacijos pradedant lygį
+            if (strcmp(lygiai[pasirinktasLygis].lygioPavadinimas, "Lengvas") == 0) 
+            {
+                printf(SPALVA_ZALIA);
+                parodytiLygioAnimacija("LENGVAS LYGIS");
+                printf(SPALVA_PRADINE);
+            }
+            else if (strcmp(lygiai[pasirinktasLygis].lygioPavadinimas, "Vidutinis") == 0) 
+            {
+                printf(SPALVA_GELTONA);
+                parodytiLygioAnimacija("VIDUTINIS LYGIS");
+                printf(SPALVA_PRADINE);
+            }
+            else if (strcmp(lygiai[pasirinktasLygis].lygioPavadinimas, "Sunkus") == 0) 
+            {
+                printf(SPALVA_MELYNA);
+                parodytiLygioAnimacija("SUNKUS LYGIS");
+                printf(SPALVA_PRADINE);
+            }
+            else if (strcmp(lygiai[pasirinktasLygis].lygioPavadinimas, "Neįmanomas") == 0) 
+            {
+                printf(SPALVA_RAUSVA);
+                parodytiLygioAnimacija("NEIMANOMAS LYGIS");
+                printf(SPALVA_PRADINE);
+            }
+            
+            system("cls"); // Išvalomas terminalo ekranas
+
+            // Paimamas pasirinkto lygio failo vardas
             const char *failoVardas = lygiai[pasirinktasLygis].failoVardas;
 
+            // Užkraunami klausimai ir atsakymai iš pasirinkto lygio
             Klausimas *klausimai = uzkrautiKlausimusIrAtsakymus(failoVardas, &skaiciuotiKlausimus);
 
             int zaidimasVyksta = 1;
 
+            // Ciklas kol žaidėjas žaidžia
             while(zaidimasVyksta)
             {
 
-                // Atspausdina atsitiktinį klausimą
+                // Atspausdinamas atsitiktinis klausimas iš failo
                 Klausimas *pasirinktasKlausimas = spausdintiAtsitiktiniKlausima(klausimai, skaiciuotiKlausimus);
 
-                // Pakeičia '?' į įvestus ženklus ir patikrina atsakymą
-                pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai, &lygiai[pasirinktasLygis], &ilgiausiaSerija);
-                strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas); // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
+                // Jeigu pasirinktas lygis "neįmanomas" taikome kitą žaidimo logiką
+                if (strcmp(lygiai[pasirinktasLygis].lygioPavadinimas, "Neįmanomas") == 0)
+                {
+                    neimanomasLygis(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai, &lygiai[pasirinktasLygis], &ilgiausiaSerija);
+                }
+                else
+                {
+                    pakeistiZenklaIrPridetiTaskus(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->teisingiZenklai, &zaidejoTaskai, &lygiai[pasirinktasLygis], &ilgiausiaSerija);
+                }
+
+                // Jeigu klausimas pasikartotų, jis grąžinamas į pradinę reikšmę su '?'
+                strcpy(pasirinktasKlausimas->klausimas, pasirinktasKlausimas->pradinisKlausimas);
 
                 // Pridedamas sužaistas roundas
                 suzaistiRoundai++;
@@ -64,6 +114,7 @@ int main()
                 char atsakymas[10];
                 int tinkamasAtsakymas = 0;
 
+                // Klausiama žaidėjo ar nori tęsti žaidimą
                 while(!tinkamasAtsakymas)
                 {
                     printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
@@ -76,19 +127,23 @@ int main()
                         atsakymas[i] = toupper(atsakymas[i]);
                     }
 
+                    // Žaidimas tęsiamas (atspausdinamas kitas klausimas)
                     if (strcmp(atsakymas, "TAIP") == 0)
                     {
-                        tinkamasAtsakymas = 1; // Tinkama įvestis, tęsiame žaidimą
-                        system("cls"); // Išvalo ekraną
+                        tinkamasAtsakymas = 1;
+                        system("cls");
                     }
+
+                    // Žaidėjas perkeliamas į pagrindinį meniu
                     else if (strcmp(atsakymas, "NE") == 0)
                     {
                         tinkamasAtsakymas = 1; // Tinkama įvestis, uždarome žaidimą
                         zaidimasVyksta = 0;
                         printf(SPALVA_MELYNA "Grįžtama į pagrindinį meniu...\n" SPALVA_PRADINE);
                         break;
-
                     }
+
+                    // Žaidėjas įvedė neteisingai
                     else
                     {   
                         printf(SPALVA_MELYNA "|***************************************************************|\n" SPALVA_PRADINE);
@@ -106,22 +161,33 @@ int main()
             patikrintiPasiekimusPoZaidimo(zaidejoTaskai, suzaistiRoundai, ilgiausiaSerija);
         }
 
-        if (pasirinkimas == 2)
+        // Parodomi turimi žaidėjo taskai
+        else if(pasirinkimas == 2)
         {
+            system("cls");
             parodytiTaskus(zaidejoTaskai);
         }
         
-        if (pasirinkimas == 3)
+        // Parodomi pasiekimai
+        else if(pasirinkimas == 3)
         {
+            system("cls");
             parodytiPasiekimus();
         }
-        if(pasirinkimas == 4)
+
+        // Atspausdinama lyderių lenta
+        else if(pasirinkimas == 4)
         {
+            system("cls");
             spausdintiLyderiuLenta();
         }
 
-        if (pasirinkimas == 5) 
+        // Atspausdinamas pabaigos ekranas ir paklausiama dar kartą ar tikrai nori palikti žaidimą
+        else if (pasirinkimas == 5) 
         {
+            system("cls");
+            parodytiPabaigosEkrana(zaidejoTaskai);
+
             printf(SPALVA_MELYNA "Ar tikrai norite išeiti? (Taip/Ne): " SPALVA_PRADINE);
 
             char atsakymas[10];
