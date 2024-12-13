@@ -2,3 +2,4 @@ Kornelijus 235 17 0
 Martynas 20 10 3
 Karolis 30 10 1
 Antanas 19 10 5
+Rokas 500 10 0
